@@ -5,17 +5,21 @@
 }
 
 .sidebar {
-    width: 300px;
-    height: 500px;
+    min-width: 300px;
+    height: 515px;
     border: 1px solid red;
 
 }
 
-.resizable-table {
-    border: 1px solid black;
-    height: 500px;
-    overflow-x: scroll;
+.wrapper {
     flex: 1;
+    overflow-x: scroll;
+}
+
+.resizable-table {
+    /*border: 1px solid black;*/
+    height: 500px;
+    min-width: 100%;
 }
 
 

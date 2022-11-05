@@ -10,6 +10,7 @@ const createColumns = (headers) => {
 }
 
 const headers = ["column1", "column2", "column3", "column4", "column5",]
+const rows = ["column1", "column2", "column3", "column4", "column5",]
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
 
 
     const tableRef = useRef(null)
+    const wrapperRef = useRef(null)
     const [activeIndex, setActiveIndex] = useState(null)
 
     const onMouseDown = (e, index) => {
@@ -26,25 +28,15 @@ function App() {
 
 
     const onMouseMove = (e) => {
-        // const gridColumns = columns.map((col, i) => {
-        //     if (i === activeIndex) {
-        //         const width = e.clientX + tableRef.current.scrollLeft - col.ref.current.offsetLeft
-        //         // console.log(col.ref.current.offsetLeft)
-        //         console.log(width)
-        //         return `${width}px`
-        //     }
-        //     return `${col.ref.current.offsetWidth}px`
-        // })
-        // tableRef.current.style.gridTemplateColumns = gridColumns.join(" ")
-
-
-        columns.forEach((col, i) => {
+        const gridColumns = columns.map((col, i) => {
             if (i === activeIndex) {
-                const width = e.clientX + tableRef.current.scrollLeft - col.ref.current.offsetLeft
-                console.log(col.ref.current.style)
-                col.ref.current.style.minWidth = `${width}px`
+                const width = e.clientX + wrapperRef.current.scrollLeft - col.ref.current.offsetLeft + 2
+                if (width > 75) return `${width}px`
             }
+            return `${col.ref.current.offsetWidth}px`
         })
+        tableRef.current.style.gridTemplateColumns = gridColumns.join(" ")
+
     }
 
 
@@ -54,6 +46,10 @@ function App() {
         window.removeEventListener("mouseup", onMouseUp)
         tableRef.current.style.cursor = ""
     }
+
+    useEffect(()=>{
+        // console.log(wrapperRef.current.style.width)
+    },[])
 
 
     useEffect(() => {
@@ -71,16 +67,18 @@ function App() {
         <div className="App">
 
             <div className={"sidebar"}/>
-            <div className="resizable-table" ref={tableRef}
-                 style={{display: "flex"}}>
-                {
-                    columns.map((c, i) => <div ref={c.ref} key={c.header}
-                                               className={"resizable-column"}
-                                               style={{minWidth: 200}}>
-                        <div>{c.header}</div>
-                        <div className={"resizer"} onMouseDown={(e) => onMouseDown(e, i)}/>
-                    </div>)
-                }
+            <div className={"wrapper"} ref={wrapperRef}>
+                <div className="resizable-table" ref={tableRef}
+                     style={{display: "grid", gridTemplateColumns: "minmax(50px, 1fr) minmax(50px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr)minmax(150px, 1fr)"}}>
+                    {
+                        columns.map((c, i) => <div ref={c.ref} key={c.header}
+                                                   className={"resizable-column"}
+                        >
+                            <div>{c.header}</div>
+                            <div className={"resizer"} onMouseDown={(e) => onMouseDown(e, i)}/>
+                        </div>)
+                    }
+                </div>
             </div>
         </div>
     );
